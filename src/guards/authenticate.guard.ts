@@ -14,7 +14,7 @@ export class AuthGuard implements CanActivate {
         const { authorization } = request.headers
         if (authorization && authorization.match(/^Bearer /)) {
             const token = authorization.split(' ')[1]
-            if (token === '#VNTRIP20!9@4749') {
+            if (token === `#${process.env.TOKEN_SECRET}`) {
                 return true
             } else {
                 return false
