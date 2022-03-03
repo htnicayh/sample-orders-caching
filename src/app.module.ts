@@ -9,15 +9,18 @@ import { AuthGuard } from './guards/authenticate.guard';
 import { OrdersModule } from './orders/orders.module';
 import { ProductsModule } from './products/products.module';
 import { PipeValidate } from './utils/pipe';
+import { LoggerModule } from './logger/logger.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true
+      isGlobal: true,
+      envFilePath: '.env'
     }),
     TypeOrmModule.forRoot(),
     ProductsModule, 
-    OrdersModule
+    OrdersModule, 
+    LoggerModule
   ],
   controllers: [
     AppController
@@ -29,7 +32,7 @@ import { PipeValidate } from './utils/pipe';
     },
     {
       provide: APP_PIPE,
-      useValue: PipeValidate 
+      useValue: PipeValidate
     },
     {
       provide: APP_GUARD,
