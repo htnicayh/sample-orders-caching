@@ -1,4 +1,4 @@
-import { IsArray, IsNumber, IsString, IsOptional } from 'class-validator'
+import { IsArray, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator'
 import { OrderStatus, OrderType } from '../enums/orders.enum'
 
 export class UpdateOrderDto {
@@ -6,17 +6,17 @@ export class UpdateOrderDto {
     @IsOptional()
     order_code: string
 
-    @IsString()
-    @IsOptional()
-    order_type: OrderType
+    @IsNotEmpty()
+    @IsEnum(OrderType, { each: true })
+    readonly order_type: OrderType
 
     @IsArray()
     @IsOptional()
-    products: String[]
+    products: string[]
 
-    @IsString()
-    @IsOptional()
-    order_status: OrderStatus
+    @IsNotEmpty()
+    @IsEnum(OrderStatus, { each: true })
+    readonly order_status: OrderStatus
 
     @IsNumber()
     @IsOptional()

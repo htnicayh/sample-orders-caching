@@ -1,14 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { OrdersEntity } from '../entities/orders.entity';
 import { CreateOrderDto } from './dtos/create-orders.dto';
 import { UpdateOrderDto } from './dtos/update-orders.dto';
-import { OrdersEntity } from '../entities/orders.entity';
 
 @Injectable()
 export class OrdersService {
     constructor(
-        @InjectRepository(OrdersEntity) private readonly ordersRepository: Repository<OrdersEntity>
+        @InjectRepository(OrdersEntity) private readonly ordersRepository: Repository<OrdersEntity>,
     ) {}
 
     async create(ordersDto: CreateOrderDto): Promise<OrdersEntity> {
@@ -29,7 +29,7 @@ export class OrdersService {
     }
 
     async get(): Promise<OrdersEntity[]> {
-        const orders = this.ordersRepository
+        const orders = await this.ordersRepository
                         .createQueryBuilder()
                         .select()
                         .getMany()
@@ -42,7 +42,6 @@ export class OrdersService {
                         .select()
                         .where('id = :id', { id })
                         .getOne()
-
         return order
     }
     

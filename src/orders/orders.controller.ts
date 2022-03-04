@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, forwardRef, Get, Inject, Param, Post, Put } from '@nestjs/common';
-import { OrdersEntity } from 'src/entities/orders.entity';
+import { OrdersEntity } from '../entities/orders.entity';
 import { CreateOrderDto } from './dtos/create-orders.dto';
 import { UpdateOrderDto } from './dtos/update-orders.dto';
 import { OrdersService } from './orders.service';

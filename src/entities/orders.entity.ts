@@ -1,22 +1,33 @@
-import { CoreEntity } from './core.entity';
+import { OrderStatus, OrderType } from 'src/orders/enums/orders.enum';
 import {
     Column,
-    Entity
+    Entity,
+    PrimaryGeneratedColumn
 } from 'typeorm';
-import { OrderStatus, OrderType } from '../orders/enums/orders.enum';
 
 @Entity('orders')
-export class OrdersEntity extends CoreEntity {
+export class OrdersEntity {
+    @PrimaryGeneratedColumn()
+    id: number
+
     @Column()
     order_code: string
 
-    @Column()
+    @Column({
+        type: 'enum',
+        enum: OrderType,
+        default: OrderType.furniture
+    })
     order_type: OrderType
 
     @Column('text', { array: true })
-    products: String[]
+    products: string[]
 
-    @Column()
+    @Column({
+        type: 'enum',
+        enum: OrderStatus,
+        default: OrderStatus.pending
+    })
     order_status: OrderStatus
 
     @Column()

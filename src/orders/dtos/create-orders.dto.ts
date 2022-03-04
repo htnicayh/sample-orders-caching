@@ -1,18 +1,20 @@
-import { OrderStatus, OrderType } from "../enums/orders.enum"
-import {
-    IsString,
-    IsNumber
-} from 'class-validator'
+import { IsArray, IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator'
+import { OrderStatus, OrderType } from '../enums/orders.enum'
+
 
 export class CreateOrderDto {
     @IsString()
     order_code: string
 
+    @IsNotEmpty()
+    @IsEnum(OrderType)
     order_type: OrderType
 
-    @IsString()
+    @IsArray()
     products: string[]
 
+    @IsNotEmpty()
+    @IsEnum(OrderStatus)
     order_status: OrderStatus
 
     @IsNumber()

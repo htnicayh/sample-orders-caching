@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, forwardRef, Get, Inject, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { ProductsEntity } from '../entities/products.entity';
 import { CreateProductDto } from './dtos/create-product.dto';
 import { UpdateProductDto } from './dtos/update-product.dto';
@@ -7,7 +7,7 @@ import { ProductsService } from './products.service';
 @Controller('products')
 export class ProductsController {
     constructor(
-        @Inject(forwardRef(() => ProductsService)) private readonly productsService: ProductsService
+        private readonly productsService: ProductsService
     ) {}
 
     @Post()

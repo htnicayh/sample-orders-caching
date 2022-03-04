@@ -1,5 +1,5 @@
 export enum OrderType {
-    furniture = 'funiture',
+    furniture = 'furniture',
     kitchen = 'kitchen'
 }
 

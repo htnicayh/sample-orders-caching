@@ -1,7 +1,7 @@
-import { Injectable, Logger, Scope } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 
-@Injectable({ scope: Scope.TRANSIENT })
-export class LoggerCustom extends Logger {
+@Injectable()
+export class CustomLogger extends Logger {
     error(message: string, trace?: string, context?: string): void {
         super.error(message, trace, context)
     }

@@ -4,12 +4,13 @@ import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { HttpErrorFilter } from './filters/exception.filter';
+import { HttpErrorFilter } from './filters/http-exception.filter';
 import { AuthGuard } from './guards/authenticate.guard';
+import { LoggerModule } from './logger/logger.module';
 import { OrdersModule } from './orders/orders.module';
 import { ProductsModule } from './products/products.module';
 import { PipeValidate } from './utils/pipe';
-import { LoggerModule } from './logger/logger.module';
+
 
 @Module({
   imports: [
@@ -39,6 +40,6 @@ import { LoggerModule } from './logger/logger.module';
       useClass: AuthGuard
     },
     AppService
-  ],
+  ]
 })
 export class AppModule {}

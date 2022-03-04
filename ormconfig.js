@@ -2,9 +2,14 @@ module.exports = {
   type: 'postgres',
   username: process.env.POSTGRES_USERNAME,
   password: process.env.POSTGRES_PASSWORD,
-  port: process.env.POSTGRES_PORT,
   host: process.env.POSTGRES_HOST,
-  database: process.env.POSRTGRES_NAME,
-  entities: ['**/*.entity.js'],
+  port: process.env.POSTGRES_PORT,
+  database: process.env.POSTGRES_NAME,
+  entities: ['dist/**/*.entity{.ts,.js}'],
+  migrations: ['migrations/*{.ts,.js}'],
+  cli: {
+    migrationsDir: 'migrations'
+  },
   synchronize: true,
+  logging: false
 }
