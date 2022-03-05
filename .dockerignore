@@ -6,3 +6,4 @@ node_modules
 Dockerfile
 .DS_Stone
 README.md
+.env
