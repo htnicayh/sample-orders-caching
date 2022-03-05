@@ -1,5 +1,15 @@
-import { IsArray, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator'
-import { OrderStatus, OrderType } from '../enums/orders.enum'
+import {
+    IsArray,
+    IsEnum,
+    IsNotEmpty,
+    IsNumber,
+    IsOptional,
+    IsString
+} from 'class-validator'
+import {
+    OrderStatus,
+    OrderType
+} from '../enums'
 
 export class UpdateOrderDto {
     @IsString()

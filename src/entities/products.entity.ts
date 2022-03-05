@@ -1,14 +1,11 @@
 import {
     Column,
-    Entity,
-    PrimaryGeneratedColumn
+    Entity
 } from 'typeorm'
+import { CoreEntity } from './core'
 
 @Entity('products')
-export class ProductsEntity {
-    @PrimaryGeneratedColumn()
-    id: number
-
+export class ProductsEntity extends CoreEntity {
     @Column()
     product_code: string
 

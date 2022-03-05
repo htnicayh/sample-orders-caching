@@ -1,6 +1,9 @@
 import {
-    ArgumentsHost, Catch, ExceptionFilter, HttpException,
-    HttpStatus
+  ArgumentsHost,
+  Catch,
+  ExceptionFilter,
+  HttpException,
+  HttpStatus
 } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { Response } from 'express';
@@ -59,6 +62,6 @@ export class HttpErrorFilter implements ExceptionFilter {
           message = exception.stack.toString()
         }
     
-        this.customLogger.error(message)
+        this.customLogger.error(message, 'FilterException')
       }
 }

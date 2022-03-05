@@ -1,9 +1,12 @@
-import { Injectable, Logger } from "@nestjs/common";
+import {
+    Injectable,
+    Logger
+} from "@nestjs/common";
 
 @Injectable()
 export class CustomLogger extends Logger {
-    error(message: string, trace?: string, context?: string): void {
-        super.error(message, trace, context)
+    error(message: string, context?: string): void {
+        super.error(message, context)
     }
 
     warn(message: string, context?: string): void {

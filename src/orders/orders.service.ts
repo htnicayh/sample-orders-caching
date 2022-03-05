@@ -1,23 +1,39 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+    Injectable,
+    NotFoundException
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { OrdersEntity } from '../entities/orders.entity';
-import { CreateOrderDto } from './dtos/create-orders.dto';
-import { UpdateOrderDto } from './dtos/update-orders.dto';
+import {
+    OFF_SET, 
+    PageDto,
+    PageMetaDto,
+    PageOptionsDto,
+    SIZE
+} from '../commons';
+import { OrdersEntity } from '../entities';
+import { CustomLogger } from '../logger/logger.service';
+import {
+    CreateOrderDto,
+    UpdateOrderDto
+} from './dtos';
 
 @Injectable()
 export class OrdersService {
     constructor(
         @InjectRepository(OrdersEntity) private readonly ordersRepository: Repository<OrdersEntity>,
-    ) {}
+        private readonly customLogger: CustomLogger
+    ) {
+        
+    }
 
-    async create(ordersDto: CreateOrderDto): Promise<OrdersEntity> {
+    public async create(ordersDto: CreateOrderDto): Promise<OrdersEntity> {
         const orders = this.ordersRepository.create(ordersDto)
         await this.ordersRepository.save(orders)
         return orders
     }
 
-    async update(updateOrdersDto: UpdateOrderDto, id: number): Promise<OrdersEntity> {
+    public async update(updateOrdersDto: UpdateOrderDto, id: number): Promise<OrdersEntity> {
         const order = await this.getOne(id)
         if (!order) {
             throw new NotFoundException('Order Not Found')
@@ -28,15 +44,46 @@ export class OrdersService {
         }
     }
 
-    async get(): Promise<OrdersEntity[]> {
-        const orders = await this.ordersRepository
-                        .createQueryBuilder()
-                        .select()
-                        .getMany()
-        return orders
+    public async get(pageOptionsDto: PageOptionsDto): Promise<PageDto<OrdersEntity>> {
+        const queryBuilder = this.ordersRepository.createQueryBuilder('orders')
+
+        this.customLogger.debug(`${JSON.stringify(pageOptionsDto)}`, 'OrdersService')
+        this.customLogger.debug(`${JSON.stringify(await queryBuilder.getRawAndEntities())}`, 'OrdersService')
+
+        queryBuilder
+            .orderBy('orders.id', pageOptionsDto._arrange || 'ASC')
+            .skip(pageOptionsDto.offset || OFF_SET)
+            .take(pageOptionsDto._size || SIZE)
+            .select()
+        
+        if (pageOptionsDto.order_id) {
+            queryBuilder
+                .andWhere('orders.id = :id', { id: pageOptionsDto.order_id })
+        }
+        if (pageOptionsDto.order_code) {
+            queryBuilder
+                .andWhere('orders.order_code = :code', { code: pageOptionsDto.order_code })
+        }
+        if (pageOptionsDto.order_type) {
+            queryBuilder
+                .andWhere('orders.order_type = :type', { type: pageOptionsDto.order_type })
+        }
+        if (pageOptionsDto.order_status) {
+            queryBuilder
+                .andWhere('orders.order_status = :status', { status: pageOptionsDto.order_status })
+        }
+
+        queryBuilder.execute()
+
+        const count = await queryBuilder.getCount()
+        const { entities } = await queryBuilder.getRawAndEntities()
+
+        const pageMetaDto = new PageMetaDto({ count, pageOptionsDto })
+
+        return new PageDto(entities, pageMetaDto)
     }
 
-    async getOne(id: number): Promise<OrdersEntity> {
+    public async getOne(id: number): Promise<OrdersEntity> {
         const order = this.ordersRepository
                         .createQueryBuilder()
                         .select()
@@ -45,7 +92,7 @@ export class OrdersService {
         return order
     }
     
-    async delete(id: number): Promise<boolean> {
+    public async delete(id: number): Promise<boolean> {
         let isRemove = false
         const order = await this.getOne(id)
 

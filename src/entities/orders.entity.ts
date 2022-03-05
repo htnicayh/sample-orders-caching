@@ -1,15 +1,12 @@
 import { OrderStatus, OrderType } from 'src/orders/enums/orders.enum';
 import {
     Column,
-    Entity,
-    PrimaryGeneratedColumn
+    Entity
 } from 'typeorm';
+import { CoreEntity } from './core';
 
 @Entity('orders')
-export class OrdersEntity {
-    @PrimaryGeneratedColumn()
-    id: number
-
+export class OrdersEntity extends CoreEntity {
     @Column()
     order_code: string
 

@@ -1,7 +1,17 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
-import { ProductsEntity } from '../entities/products.entity';
-import { CreateProductDto } from './dtos/create-product.dto';
-import { UpdateProductDto } from './dtos/update-product.dto';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Post,
+    Put
+} from '@nestjs/common';
+import { ProductsEntity } from '../entities';
+import {
+    CreateProductDto,
+    UpdateProductDto
+} from './dtos';
 import { ProductsService } from './products.service';
 
 @Controller('products')

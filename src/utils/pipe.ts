@@ -1,5 +1,6 @@
 import { ValidationPipe } from "@nestjs/common"
 
 export const PipeValidate = new ValidationPipe({
-    whitelist: true
+    whitelist: true,
+    transform: true
 })

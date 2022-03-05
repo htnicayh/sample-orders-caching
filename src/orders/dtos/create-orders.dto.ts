@@ -1,5 +1,14 @@
-import { IsArray, IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator'
-import { OrderStatus, OrderType } from '../enums/orders.enum'
+import {
+    IsArray,
+    IsEnum,
+    IsNotEmpty,
+    IsNumber,
+    IsString
+} from 'class-validator'
+import {
+    OrderStatus,
+    OrderType
+} from '../enums'
 
 
 export class CreateOrderDto {
