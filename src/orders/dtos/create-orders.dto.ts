@@ -13,22 +13,22 @@ import {
 
 export class CreateOrderDto {
     @IsString()
-    order_code: string
+    readonly orderCode: string
 
     @IsNotEmpty()
     @IsEnum(OrderType)
-    order_type: OrderType
+    readonly orderType: OrderType
 
     @IsArray()
-    products: string[]
+    readonly products: string[]
 
     @IsNotEmpty()
     @IsEnum(OrderStatus)
-    order_status: OrderStatus
+    readonly orderStatus: OrderStatus
 
     @IsNumber()
-    quantity: number
+    readonly quantity: number
 
     @IsNumber()
-    total_price: number
+    readonly totalPrice: number
 }

@@ -27,7 +27,7 @@ export class PageMetaDto {
         this._page = _page
         this._size = _size
         this._count = count
-        this._pageCount = Math.ceil(this._count / this._size)
+        this._pageCount = Math.ceil(this._count / this._size) || 1
         this._hasPreviosPage = this._page > 1
         this._hasNextPage = this._page < this._pageCount
     }

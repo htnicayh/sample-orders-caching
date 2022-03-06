@@ -1,14 +1,17 @@
 import {
+    HttpException,
+    HttpStatus,
     Injectable,
     NotFoundException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import {
     OFF_SET, 
     PageDto,
     PageMetaDto,
     PageOptionsDto,
+    QueryOrderDto,
     SIZE
 } from '../commons';
 import { OrdersEntity } from '../entities';
@@ -23,60 +26,68 @@ export class OrdersService {
     constructor(
         @InjectRepository(OrdersEntity) private readonly ordersRepository: Repository<OrdersEntity>,
         private readonly customLogger: CustomLogger
-    ) {
-        
+    ) {}
+
+    private static getQuery(queryOrder: QueryOrderDto, queryOrders: SelectQueryBuilder<OrdersEntity>): SelectQueryBuilder<OrdersEntity> {
+        let ordersQueryBuilder = queryOrders
+
+        if (queryOrder.orderId) {
+            ordersQueryBuilder = ordersQueryBuilder
+                .where('orders.id = :id', {
+                    id: queryOrder.orderId
+                })
+        }
+        if (queryOrder.orderCode) {
+            ordersQueryBuilder = ordersQueryBuilder
+                .andWhere('orders.orderCode = :code', {
+                    code: queryOrder.orderCode
+                })
+        }
+        if (queryOrder.orderType) {
+            ordersQueryBuilder = ordersQueryBuilder
+                .andWhere('orders.orderType = :type', {
+                    type: queryOrder.orderType
+                })
+        }
+        if (queryOrder.orderStatus) {
+            ordersQueryBuilder = ordersQueryBuilder
+                .andWhere('orders.orderStatus = :status', {
+                    status: queryOrder.orderStatus
+                })
+        }
+
+        return ordersQueryBuilder
     }
 
     public async create(ordersDto: CreateOrderDto): Promise<OrdersEntity> {
-        const orders = this.ordersRepository.create(ordersDto)
-        await this.ordersRepository.save(orders)
-        return orders
+        const newOrders = this.ordersRepository.create(ordersDto)
+        await this.ordersRepository.save(newOrders)
+        return newOrders
     }
 
     public async update(updateOrdersDto: UpdateOrderDto, id: number): Promise<OrdersEntity> {
-        const order = await this.getOne(id)
-        if (!order) {
-            throw new NotFoundException('Order Not Found')
-        } else {
-            Object.assign(order, updateOrdersDto)
-            await this.ordersRepository.save(order)
-            return order
+        await this.ordersRepository.update(id, updateOrdersDto)
+        const updateOrder = await this.ordersRepository.findOne(id)
+        if (updateOrder) {
+            updateOrder.updateAt = new Date()
+            await this.ordersRepository.save(updateOrder)
+            return updateOrder
         }
+        throw new HttpException('Order Not Found', HttpStatus.NOT_FOUND)
     }
 
-    public async get(pageOptionsDto: PageOptionsDto): Promise<PageDto<OrdersEntity>> {
+    public async get(pageOptionsDto: PageOptionsDto, ordersQuery: QueryOrderDto): Promise<PageDto<OrdersEntity>> {
         const queryBuilder = this.ordersRepository.createQueryBuilder('orders')
 
-        this.customLogger.debug(`${JSON.stringify(pageOptionsDto)}`, 'OrdersService')
-        this.customLogger.debug(`${JSON.stringify(await queryBuilder.getRawAndEntities())}`, 'OrdersService')
+        const ordersQueryBuilder = OrdersService.getQuery(ordersQuery, queryBuilder)
 
-        queryBuilder
-            .orderBy('orders.id', pageOptionsDto._arrange || 'ASC')
+        ordersQueryBuilder
+            .orderBy('id', pageOptionsDto._arrange || 'ASC')
             .skip(pageOptionsDto.offset || OFF_SET)
             .take(pageOptionsDto._size || SIZE)
-            .select()
-        
-        if (pageOptionsDto.order_id) {
-            queryBuilder
-                .andWhere('orders.id = :id', { id: pageOptionsDto.order_id })
-        }
-        if (pageOptionsDto.order_code) {
-            queryBuilder
-                .andWhere('orders.order_code = :code', { code: pageOptionsDto.order_code })
-        }
-        if (pageOptionsDto.order_type) {
-            queryBuilder
-                .andWhere('orders.order_type = :type', { type: pageOptionsDto.order_type })
-        }
-        if (pageOptionsDto.order_status) {
-            queryBuilder
-                .andWhere('orders.order_status = :status', { status: pageOptionsDto.order_status })
-        }
 
-        queryBuilder.execute()
-
-        const count = await queryBuilder.getCount()
-        const { entities } = await queryBuilder.getRawAndEntities()
+        const count = await ordersQueryBuilder.getCount()
+        const { entities } = await ordersQueryBuilder.getRawAndEntities()
 
         const pageMetaDto = new PageMetaDto({ count, pageOptionsDto })
 
@@ -97,7 +108,10 @@ export class OrdersService {
         const order = await this.getOne(id)
 
         if (order) {
-            await this.ordersRepository.delete(order)
+            const orderDelete = await this.ordersRepository.delete(order)
+            if (orderDelete.affected !== 1) {
+                isRemove = false
+            }
             isRemove = true
         }
 

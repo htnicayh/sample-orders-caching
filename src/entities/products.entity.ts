@@ -1,17 +1,16 @@
 import {
-    Column,
-    Entity
+    Column, Entity
 } from 'typeorm'
 import { CoreEntity } from './core'
 
 @Entity('products')
 export class ProductsEntity extends CoreEntity {
-    @Column()
-    product_code: string
+    @Column({ name: 'product_code', unique: true })
+    public productCode: string
+
+    @Column({ name: 'product_name' })
+    public productName: string
 
     @Column()
-    product_name: string
-
-    @Column()
-    price: number
+    public price: number
 }

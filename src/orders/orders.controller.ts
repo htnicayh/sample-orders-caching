@@ -12,7 +12,8 @@ import {
 } from '@nestjs/common';
 import { 
     PageDto, 
-    PageOptionsDto 
+    PageOptionsDto, 
+    QueryOrderDto
 } from '../commons';
 import { OrdersEntity } from '../entities';
 import { 
@@ -28,8 +29,8 @@ export class OrdersController {
     ) {}
 
     @Get()
-    public async get(@Query() pageOptionsDto: PageOptionsDto): Promise<PageDto<OrdersEntity>> {
-        const results = await this.ordersService.get(pageOptionsDto)
+    public async get(@Query() pageOptionsDto: PageOptionsDto, @Query() ordersQuery: QueryOrderDto): Promise<PageDto<OrdersEntity>> {
+        const results = await this.ordersService.get(pageOptionsDto, ordersQuery)
         return results
     }
 

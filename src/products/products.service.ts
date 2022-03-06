@@ -22,7 +22,7 @@ export class ProductsService {
         return product
     }
 
-    async getById(id: number): Promise<ProductsEntity> {
+    async getOne(id: number): Promise<ProductsEntity> {
         const product = await this.productsRepository
                             .createQueryBuilder()
                             .select()
@@ -41,7 +41,7 @@ export class ProductsService {
     }
 
     async update(updateProductDto: UpdateProductDto, id: number): Promise<ProductsEntity> {
-        const product = await this.getById(id)
+        const product = await this.productsRepository.findOne(id)
         if (!product) {
             throw new NotFoundException('Product Not Found')
         }
@@ -51,7 +51,7 @@ export class ProductsService {
     }
 
     async delete(id: number): Promise<any> {
-        const product = await this.getById(id)
+        const product = await this.productsRepository.findOne(id)
         if (!product) {
             throw new NotFoundException('Product Not Found')
         }

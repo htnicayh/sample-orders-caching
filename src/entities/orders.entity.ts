@@ -1,35 +1,50 @@
-import { OrderStatus, OrderType } from 'src/orders/enums/orders.enum';
+import { OrderStatus, OrderType } from '../orders/enums/orders.enum';
 import {
     Column,
-    Entity
+    Entity,
+    CreateDateColumn
 } from 'typeorm';
 import { CoreEntity } from './core';
 
 @Entity('orders')
 export class OrdersEntity extends CoreEntity {
-    @Column()
-    order_code: string
+    @Column({ name: 'order_code' })
+    public orderCode: string
 
     @Column({
         type: 'enum',
         enum: OrderType,
-        default: OrderType.furniture
+        default: OrderType.furniture,
+        name: 'order_type'
     })
-    order_type: OrderType
+    public orderType: OrderType
 
     @Column('text', { array: true })
-    products: string[]
+    public products: string[]
 
     @Column({
         type: 'enum',
         enum: OrderStatus,
-        default: OrderStatus.pending
+        default: OrderStatus.pending,
+        name: 'order_status'
     })
-    order_status: OrderStatus
+    public orderStatus: OrderStatus
 
     @Column()
-    quantity: number
+    public quantity: number
 
-    @Column()
-    total_price: number
+    @Column({ name: 'total_price' })
+    public totalPrice: number
+
+    @CreateDateColumn({ 
+        name: 'create_at', 
+        type: 'timestamp' 
+    })
+    public createAt: Date
+
+    @CreateDateColumn({ 
+        name: 'update_at', 
+        type: 'timestamp' 
+    })
+    public updateAt: Date
 }

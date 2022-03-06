@@ -34,7 +34,7 @@ export class ProductsController {
 
     @Get('/:id')
     async getById(@Param('id') id: string): Promise<ProductsEntity> {
-        const product = await this.productsService.getById(parseInt(id))
+        const product = await this.productsService.getOne(+id)
         return product
     }
 

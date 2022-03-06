@@ -27,22 +27,6 @@ export class PageOptionsDto {
     @IsOptional()
     readonly _size?: number
 
-    @Type(() => Number)
-    @IsOptional()
-    readonly order_id?: number
-
-    @IsString()
-    @IsOptional()
-    readonly order_code?: string
-
-    @IsString()
-    @IsOptional()
-    readonly order_type?: string
-
-    @IsString()
-    @IsOptional()
-    readonly order_status?: string
-
     get offset(): number {
         return (this._page - 1) * this._size
     }

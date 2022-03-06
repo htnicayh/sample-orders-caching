@@ -14,25 +14,25 @@ import {
 export class UpdateOrderDto {
     @IsString()
     @IsOptional()
-    order_code: string
+    readonly orderCode: string
 
-    @IsNotEmpty()
+    @IsOptional()
     @IsEnum(OrderType, { each: true })
-    readonly order_type: OrderType
+    readonly orderType: OrderType
 
     @IsArray()
     @IsOptional()
-    products: string[]
+    readonly products: string[]
 
-    @IsNotEmpty()
+    @IsOptional()
     @IsEnum(OrderStatus, { each: true })
-    readonly order_status: OrderStatus
+    readonly orderStatus: OrderStatus
 
     @IsNumber()
     @IsOptional()
-    quantity: number
+    readonly quantity: number
 
     @IsNumber()
     @IsOptional()
-    total_price: number
+    readonly totalPrice: number
 }

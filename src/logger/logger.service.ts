@@ -13,7 +13,7 @@ export class CustomLogger extends Logger {
         super.warn(message, context)
     }
 
-    log(message: string, context?: string): void {
+    log(message: string | any, context?: string): void {
         super.log(message, context)
     }
 
