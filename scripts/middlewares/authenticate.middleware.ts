@@ -10,7 +10,7 @@ import {
     Response,
     NextFunction
 } from 'express'
-import { CustomLogger } from 'src/logger/logger.service'
+import { CustomLogger } from 'scripts/logger/logger.service'
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {

@@ -117,4 +117,27 @@ export class OrdersService {
 
         return isRemove
     }
+
+
+    // Caching Daily & Get Daily Report
+    /*
+        @params startDate
+        @params endDate
+        @body reportDate
+    */
+
+    public async queryDailyReport(reportDate: string): Promise<string> {
+        const begin = `${reportDate} 00:00:00`
+        const end = `${reportDate} 23:59:59`
+
+        const ordersQueryBuilder = this.ordersRepository.createQueryBuilder('orders')
+
+        const ordersReport = await ordersQueryBuilder
+                                    .select('SUM(orders.totalPrice)', 'total_price')
+                                    .addSelect('COUNT(orders.orderCode)', 'numberOfOrders')
+                                    .where(`orders.updateAt between '${begin}' and '${end}'`)
+                                    .getRawOne();
+
+        return ordersReport
+    }
 }

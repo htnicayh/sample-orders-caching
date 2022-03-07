@@ -8,12 +8,14 @@ import { RedisService } from "./redis.service"
         CacheModule.registerAsync({
             imports: [ConfigModule],
             inject: [ConfigService],
-            useFactory: async (configService: ConfigService) => ({
-                store: redisStore,
-                host: configService.get('REDIS_HOST'),
-                port: configService.get('REDIS_PORT'),
-                ttl: configService.get('REDIS_TTL')
-            }),
+            useFactory: async (configService: ConfigService) => {
+                return {
+                    store: redisStore,
+                    host: configService.get('REDIS_HOST'),
+                    port: configService.get('REDIS_PORT'),
+                    ttl: configService.get('REDIS_TTL')
+                }
+            },
             isGlobal: true
         }),
     ],

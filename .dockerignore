@@ -1,9 +1,7 @@
 .git
 docker-compose*
-dist
 node_modules
 .gitignore
 Dockerfile
 .DS_Stone
 README.md
-.env

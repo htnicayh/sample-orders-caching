@@ -1,6 +1,6 @@
 import {
   MiddlewareConsumer,
-  Module, 
+  Module,
   NestModule
 } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
@@ -8,6 +8,7 @@ import {
   APP_FILTER,
   APP_PIPE
 } from '@nestjs/core';
+import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -17,9 +18,9 @@ import { LoggerModule } from './logger/logger.module';
 import { AuthMiddleware } from './middlewares';
 import { OrdersModule } from './orders/orders.module';
 import { ProductsModule } from './products/products.module';
-import { PipeValidate } from './utils';
 import { ReportsModule } from './reports/reports.module';
 import { SchedulesModule } from './schedules/schedules.module';
+import { PipeValidate } from './utils';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { SchedulesModule } from './schedules/schedules.module';
       isGlobal: true,
       envFilePath: '.env.development'
     }),
+    ScheduleModule.forRoot(),
     TypeOrmModule.forRoot(),
     ProductsModule, 
     OrdersModule,

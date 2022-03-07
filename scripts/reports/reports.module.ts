@@ -1,10 +1,16 @@
 import { Module } from '@nestjs/common';
-import { RedisModule } from 'src/cache/redis.module';
+import { SchedulesModule } from '../schedules/schedules.module';
+import { RedisModule } from '../cache/redis.module';
+import { OrdersModule } from '../orders/orders.module';
 import { ReportsController } from './reports.controller';
 import { ReportsService } from './reports.service';
 
 @Module({
-  imports: [RedisModule],
+  imports: [
+    RedisModule, 
+    OrdersModule,
+    SchedulesModule
+  ],
   controllers: [ReportsController],
   providers: [ReportsService],
   exports: [ReportsService]
