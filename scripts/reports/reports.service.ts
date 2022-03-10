@@ -40,9 +40,6 @@ export class ReportsService {
 
         const dailyReport = await this.redisService.getMany(arrayReportDate)
 
-        // Debug
-        this.customLogger.warn(`${JSON.stringify(dailyReport)}`, 'ReportsService')
-
         const reports = {}
         arrayReportDate.forEach((key, index) => {
             reports[key] = dailyReport[index]

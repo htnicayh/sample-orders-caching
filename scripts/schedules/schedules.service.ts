@@ -34,6 +34,8 @@ export class SchedulesService {
         // Get Information orders yesterday
         const dailyReport = await this.ordersService.queryDailyReport(reportDate)
 
+        console.log('Daily Report - ', dailyReport)
+
         // Set in cache Redis
         await this.redisService.set(reportDate, dailyReport)
     }

@@ -4,9 +4,8 @@ import {
     IsInt,
     IsOptional,
     Max,
-    Min,
-    IsString
-} from 'class-validator'
+    Min
+} from 'class-validator';
 import { Arrange } from "../enums";
 
 export class PageOptionsDto {

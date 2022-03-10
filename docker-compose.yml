@@ -5,6 +5,8 @@ services:
     image: postgres:9.5
     ports:
       - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
     env_file:
       - .env.development
     networks:
@@ -17,6 +19,20 @@ services:
       - '6379:6379'
     networks:
       - nest-caching
+
+  servers:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: nest_server
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./src:/app/src
+      - /app/node_modules
+    depends_on:
+      - postgres
+      - redis
 
 networks:
   nest-caching:

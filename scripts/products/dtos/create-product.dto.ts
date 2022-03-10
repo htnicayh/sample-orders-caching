@@ -4,11 +4,11 @@ export class CreateProductDto {
     @IsString()
     @MaxLength(20)
     @MinLength(0)
-    product_code: string
+    productCode: string
 
     @IsString()
     @MinLength(0)
-    product_name: string
+    productName: string
 
     @IsNumber()
     @Min(0)

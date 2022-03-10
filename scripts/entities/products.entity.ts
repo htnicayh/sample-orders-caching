@@ -5,7 +5,7 @@ import { CoreEntity } from './core'
 
 @Entity('products')
 export class ProductsEntity extends CoreEntity {
-    @Column({ name: 'product_code', unique: true })
+    @Column({ name: 'product_code' })
     public productCode: string
 
     @Column({ name: 'product_name' })

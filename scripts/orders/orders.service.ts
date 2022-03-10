@@ -1,13 +1,12 @@
 import {
     HttpException,
     HttpStatus,
-    Injectable,
-    NotFoundException
+    Injectable
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { getManager, Repository, SelectQueryBuilder } from 'typeorm';
 import {
-    OFF_SET, 
+    OFF_SET,
     PageDto,
     PageMetaDto,
     PageOptionsDto,
@@ -124,20 +123,62 @@ export class OrdersService {
         @params startDate
         @params endDate
         @body reportDate
+        @return ordersReport
+                mostBuyProducts
+                numberOfProducts
     */
 
     public async queryDailyReport(reportDate: string): Promise<string> {
         const begin = `${reportDate} 00:00:00`
         const end = `${reportDate} 23:59:59`
 
+        // this.customLogger.debug(`${JSON.stringify(reportDate)}`, 'OrdersService')
+
         const ordersQueryBuilder = this.ordersRepository.createQueryBuilder('orders')
 
         const ordersReport = await ordersQueryBuilder
                                     .select('SUM(orders.totalPrice)', 'total_price')
-                                    .addSelect('COUNT(orders.orderCode)', 'numberOfOrders')
-                                    .where(`orders.updateAt between '${begin}' and '${end}'`)
+                                    .addSelect('COUNT(orders.orderCode)', 'number_orders')
+                                    .where(`orders.updateAt BETWEEN '${begin}' AND '${end}'`)
                                     .getRawOne();
 
-        return ordersReport
+        const joinTable = ordersQueryBuilder
+                            .select('*')
+                            .innerJoin('products', 'products', 'products.product_code = ANY(orders.products)')
+                            .where(`update_at BETWEEN '${begin}' AND '${end}'`)
+                            
+
+        const numberOfProducts = await getManager().createQueryBuilder()
+                                    .select('SUM(quantity)', 'total_products')
+                                    .from('(' + joinTable.getQuery() + ')', 'products_orders')
+                                    .getRawMany()
+        
+        const quantityByProducts = getManager()
+                                    .createQueryBuilder()
+                                    .select('product_code', 'product_code')
+                                    .addSelect('SUM(quantity)', 'sum_quantity')
+                                    .from('(' + joinTable.getQuery() + ')', 'joinTable')
+                                    .groupBy('product_code')
+
+        const mostBuyProducts =  getManager().createQueryBuilder()
+                                        .select('*')
+                                        .select('product_code', 'product_code')
+                                        .addSelect('MAX(sum_quantity)', 'max_quantity')
+                                        .from('(' + quantityByProducts.getQuery() + ')', 'quantityByProducts')
+                                        .groupBy('product_code')
+                                        .limit(1)
+                                        
+                                        
+        const mostProducts = await mostBuyProducts.getRawOne()
+
+        const reportDaily = {
+            ...ordersReport,
+            ...numberOfProducts[0],
+            ...mostProducts
+        }
+
+        // console.log('Debug - ', reportDaily)
+
+        return reportDaily
     }
 }

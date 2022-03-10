@@ -27,7 +27,6 @@ export class ReportsController {
         }
     */
 
-    
     @Get()
     public async testCronJob(): Promise<void> {
         return await this.schedulesService.cacheDailyReport()
